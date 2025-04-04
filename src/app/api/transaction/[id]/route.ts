@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/config/db";
 import User from "@/models/User";
 import { verifyToken } from "@/middleware/verifyToken";
-import { userUpdateValidation } from "@/utils/validation";
 import { MESSAGE } from "@/constants/message";
 
 
-
+// pending
 export async function PATCH(req: NextRequest) {
     try {
         await connectDB();
@@ -26,18 +25,13 @@ export async function PATCH(req: NextRequest) {
         }
 
         const body = await req.json();
-        const parsedData = userUpdateValidation.safeParse(body);
+        // const validatedData = validateRequestBody(userUpdateValidation, body);
 
-        if (!parsedData.success) {
-            return NextResponse.json(
-                { success: false, message: MESSAGE.VALIDATION_ERROR, errors: parsedData.error.errors },
-                { status: 400 }
-            );
-        }
-
+        // if (validatedData instanceof NextResponse) {
+        //     return validatedData; // Return validation error response
+        // }
+        const { amount, date, type, userId } = body;
         // body data
-
-        const { name, email, phone } = parsedData.data;
 
         // checking if is authorized to update 
         if (id !== authResponse.decoded?.userid) {

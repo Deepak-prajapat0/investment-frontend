@@ -8,6 +8,7 @@ import Transaction from "@/models/Transaction";
 import { userAddValidation } from "@/utils/validation";
 import { verifyToken } from "@/middleware/verifyToken";
 import { MESSAGE } from "@/constants/message";
+import { validateRequestBody } from "@/helpers/validationHelper";
 
 export async function POST(req: NextRequest) {
     await connectDB()
@@ -21,21 +22,18 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const parsedData = userAddValidation.safeParse(body);
+    const validatedData = validateRequestBody(userAddValidation, body);
 
-    if (!parsedData.success) {
-        return NextResponse.json(
-            { success: false, message: MESSAGE.VALIDATION_ERROR, errors: parsedData.error.errors },
-            { status: 400 }
-        );
+    if (validatedData instanceof NextResponse) {
+        return validatedData; // Return validation error response
     }
 
-    const { name, email, phone, amount, date } = parsedData.data;
+    const { name, email, phone, amount, date } = validatedData;
 
     const userExist = await User.findOne({ email: email, phone: phone, isDeleted: false });
 
     if (userExist) {
-        return NextResponse.json({ success: false, message: "User with this email or phone number is already exist" }, { status: 400 });
+        return NextResponse.json({ success: false, message: MESSAGE.USER_EMAIL_EXIST }, { status: 400 });
     }
 
     const password = generatePassword(name, phone)
@@ -46,7 +44,7 @@ export async function POST(req: NextRequest) {
         await Transaction.create({ userId: user._id, amount, date, type: "credit" })
     }
 
-    return NextResponse.json({ success: true, message: "User created", data: { ...user } }, { status: 200 });
+    return NextResponse.json({ success: true, message: MESSAGE.USER_CREATED, data: { ...user } }, { status: 200 });
 
 }
 
@@ -61,12 +59,12 @@ export async function GET(req: NextRequest) {
         if (!authResponse.success) return authResponse;
 
         if (!authResponse?.decoded?.isAdmin) {
-            return NextResponse.json({ success: false, message: "Unauthorized: Invalid token" }, { status: 401 });
+            return NextResponse.json({ success: false, message: MESSAGE.INVALID_TOKEN }, { status: 401 });
         }
 
         const users = await User.aggregate([
             {
-                $match: { isAdmin: false,isDeleted:false } // Get only non-admin users
+                $match: { isAdmin: false, isDeleted: false } // Get only non-admin users
             },
             {
                 $lookup: {
@@ -127,12 +125,9 @@ export async function GET(req: NextRequest) {
             }
         ]);
 
-        // if (!user) {
-        //     return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
-        // }
         return NextResponse.json({ success: true, data: users }, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json({ error: MESSAGE.INTERNAL_ERROR }, { status: 500 });
     }
 }
 

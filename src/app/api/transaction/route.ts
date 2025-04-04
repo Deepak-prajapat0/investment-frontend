@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/config/db";
 import User from "@/models/User";
 import { verifyToken } from "@/middleware/verifyToken";
-import { transactionValidation, userUpdateValidation } from "@/utils/validation";
+import { transactionValidation } from "@/utils/validation";
 import Transaction from "@/models/Transaction";
 import { MESSAGE } from "@/constants/message";
+import { validateRequestBody } from "@/helpers/validationHelper";
 
 
 
@@ -22,31 +23,27 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const parsedData = transactionValidation.safeParse(body);
+        const validatedData = validateRequestBody(transactionValidation, body);
 
-        if (!parsedData.success) {
-            return NextResponse.json(
-                { success: false, message: MESSAGE.VALIDATION_ERROR, errors: parsedData.error.errors },
-                { status: 400 }
-            );
+        if (validatedData instanceof NextResponse) {
+            return validatedData; // Return validation error response
         }
+        const { amount, date, type, userId } = validatedData;
 
-        const { amount, date, type ,userId } = parsedData.data;  
-
-        if(!userId){
+        if (!userId) {
             return NextResponse.json({ success: false, message: MESSAGE.USERID_REQUIRED }, { status: 400 });
         }
 
-        const validUser = await User.findOne({ _id: userId ,isAdmin:false,isDeleted:false})
+        const validUser = await User.findOne({ _id: userId, isAdmin: false, isDeleted: false })
 
-        if (!validUser || userId === authResponse.decoded?.userId){
+        if (!validUser || userId === authResponse.decoded?.userId) {
             return NextResponse.json({ success: false, message: MESSAGE.INVALID_USERID }, { status: 400 });
         }
 
-        const transaction = await Transaction.create({ userId: userId,amount,type,date})
+        const transaction = await Transaction.create({ userId: userId, amount, type, date })
 
         return NextResponse.json({ success: true, message: MESSAGE.TRANSACTION_ADDED, data: transaction }, { status: 201 });
     } catch (error) {
-        return NextResponse.json({ success: false, message:MESSAGE.INTERNAL_ERROR  }, { status: 500 });
+        return NextResponse.json({ success: false, message: MESSAGE.INTERNAL_ERROR }, { status: 500 });
     }
 }
