@@ -1,13 +1,9 @@
-'use client';
+
 import ContactUsForm from "@/components/forms/ContactUsForm";
 import React from "react";
 
-export default function ContactUs() {
+export default async function ContactUs() {
 
-
-    const handleSubmit = (val: any) => {
-        console.log(val)
-    }
 
     return (
         <div className="max-w-6xl mx-auto p-6">
@@ -36,7 +32,7 @@ export default function ContactUs() {
                 </div>
 
                 {/* Right: Contact Form */}
-              <ContactUsForm handleSubmit={handleSubmit}/>
+              <ContactUsForm/>
             </section>
         </div>
     );

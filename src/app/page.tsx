@@ -1,6 +1,6 @@
 import WhyUsSection from "@/components/home/WhyUsSection";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className="min-h-screen">
             {/* Hero Section */}

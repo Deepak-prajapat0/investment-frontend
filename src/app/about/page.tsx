@@ -2,7 +2,7 @@ import { WHY_CHOOSE_US } from "@/constants/constant";
 import Image from "next/image";
 import React from "react";
 
-export default function AboutUs() {
+export default async function AboutUs() {
     return (
         <div className=" pb-8">
             {/* Hero Section */}
@@ -18,18 +18,6 @@ export default function AboutUs() {
                     </div>
                     <Image src={'/about-us.jpg'} loading="lazy" height={400} width={500} alt="about company" className="rounded-xl" />
                 </section>
-
-                {/* Company Overview
-            <section className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Who We Are</h2>
-                <p className="text-gray-600 leading-relaxed">
-                    We are a trusted investment firm committed to helping individuals and businesses 
-                    grow their wealth through strategic investments. Our team of financial experts 
-                    ensures that our clients receive personalized investment plans that align with 
-                    their financial goals.
-                </p>
-            </section> */}
-
 
                 {/* Why Choose Us */}
                 <section className="mt-10 p-2 pt-16 ">

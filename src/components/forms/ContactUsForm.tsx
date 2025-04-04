@@ -7,7 +7,12 @@ import * as Yup from 'yup'
 import { Button } from '../ui/button'
 import { ContactFormProps } from '@/types/type'
 
-const ContactUsForm = ({ handleSubmit }: ContactFormProps) => {
+const ContactUsForm = () => {
+
+const handleSubmit = async (values:any) => {
+    // const { name, email, message } = values
+}
+
     return (
         <Card className='md:max-w-[25rem] w-full mx-auto'>
 
