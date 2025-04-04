@@ -23,16 +23,32 @@ const useTransaction = (user: UserDetailTypes | null, setUser: (user: UserDetail
             if (response) {
                 toast.success(response.message);
 
-                const updatedTransactions = user?.transactions
-                    ? user.transactions.some((item: any) => item._id === response.data._id)
-                        ? user.transactions.map((item: any) =>
-                            item._id === response.data._id ? response.data : item
-                        ) // Update existing transaction
-                        : [...user.transactions, response.data] // Add new transaction
-                    : [response.data]; // Initialize array if empty
+                const updatedTransactions = user?.transactions ?? []; // Ensure transactions is an array
+
+                const transactionExists = updatedTransactions.some(
+                    (item: any) => item._id === response.data._id
+                );
+
+                const updatedTransactionsList = transactionExists
+                    ? updatedTransactions.map((item: any) =>
+                        item._id === response.data._id ? response.data : item
+                    )
+                    : [...updatedTransactions, response.data];
+
+
+                const totalCredit = updatedTransactionsList.reduce(
+                    (sum, item: any) => sum + ( item?.type === 'credit'? Number(item.amount) : 0), 0
+                );
+
+                const totalDebit = updatedTransactionsList.reduce(
+                    (sum, item: any) => sum + ( item?.type === 'debit'? Number(item.amount) : 0), 0
+                );
+
+                // Calculate remainingAmount (assuming there is a total limit or previous balance)
+                // const remainingAmount = prev.totalAmount - totalCredit;
 
                 setUser((prev: any) => prev
-                    ? { ...prev, transactions: updatedTransactions }
+                    ? { ...prev, totalCredit, remainingAmount: totalCredit-totalDebit, transactions: updatedTransactionsList }
                     : null
                 );
             }

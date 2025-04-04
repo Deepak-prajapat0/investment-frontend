@@ -6,7 +6,7 @@ import {
   TableRow
 } from "@/components/ui/table";
 import ManageUserMenu from '@/components/ManageUserMenu';
-import moment from 'moment';
+import { format } from "date-fns";
 import { getAllUsersData } from '@/actions/userActions';
 // import { getAllUsers } from '@/services/user.service';
 
@@ -62,7 +62,7 @@ const UserList = async() => {
       <TableRow key={user?._id} className="hover:bg-transparent">
         <TableCell className="font-medium">{user?.name}</TableCell>
             <TableCell className='text-right'>${user?.totalCredit}</TableCell>
-        <TableCell className='text-center'>{moment(user?.createdAt).format("MMM DD yyyy hh:mm A")}</TableCell>
+            <TableCell className='text-center'>{format(user?.createdAt ,"MMM dd yyyy hh:mm a")}</TableCell>
             <TableCell className="text-right">${user?.totalDebit}</TableCell>
         <TableCell className="text-right" >
           <ManageUserMenu user={user} />

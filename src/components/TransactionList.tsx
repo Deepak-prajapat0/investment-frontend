@@ -1,7 +1,7 @@
 import { Card, CardDescription, CardHeader, CardTitle } from './ui/card'
 import { Transaction } from '@/types/type'
 import { getAmountType, getTitleCase } from '@/utils'
-import moment from 'moment'
+import {format} from 'date-fns'
 
 interface Props {
     transactions: Transaction[];
@@ -21,7 +21,7 @@ const TransactionList = ({ transactions }: Props) => {
                             </CardTitle>
                             <CardDescription className='flex flex-row justify-between'>
                                 <div>Card Description</div>
-                                <div>{moment(item.date, false).format('MMMM DD, YYYY')}</div>
+                                <div>{format(item.date ,'MMMM dd, yyyy')}</div>
                             </CardDescription>
                         </CardHeader>
                     </Card>

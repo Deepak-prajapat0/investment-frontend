@@ -36,7 +36,7 @@ const UserDetail = ({ user, handleUpdate, transaction, selectedTransaction }: Pr
                 <h2 className='text-2xl '>User Details</h2>
                 
                     <Card className='p-3 mt-4 '>
-                        <CardContent className='flex flex-row gap-4 items-center'>
+                        <CardContent className='flex flex-row gap-4 pt-1 items-center'>
                             <Avatar className='w-20 h-20'>
                                 <AvatarImage src={`https://eu.ui-avatars.com/api/?name=${user?.name}&size=350`} />
                                 <AvatarFallback>CN</AvatarFallback>
@@ -48,6 +48,7 @@ const UserDetail = ({ user, handleUpdate, transaction, selectedTransaction }: Pr
                               <p>{user?.phone}</p>
                             </div>
                         </CardContent>
+                        <hr />
                         <CardContent  className='flex flex-row justify-between'>
                             <div  className='flex flex-col gap-1'>
                                 <h4>Total Investment</h4>

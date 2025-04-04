@@ -10,6 +10,14 @@ import DatePicker from '../common/DatePicker';
 import ErrorField from '../common/ErrorField';
 import SelectField from '../common/SelectField';
 import { TRANSACTION } from '@/constants/constant';
+import {object, string,date} from 'yup';
+
+
+const validationSchema = object({
+    type: string().oneOf(['credit','debit']).required('Type is required'),
+    date: date().required('Date is required'),
+    amount: string().required("Amount is required"),
+})
 
 const TransactionModal = ({ open, setOpen, handleToggle, transaction, handleSubmit }:any) => {
 
@@ -30,7 +38,7 @@ const TransactionModal = ({ open, setOpen, handleToggle, transaction, handleSubm
                 
                     <Formik
                         initialValues={{ type: transaction?.type || '', amount: transaction?.amount || '', date: transaction?.date || '' }}
-                        //   validationSchema={validationSchema}
+                          validationSchema={validationSchema}
 
                         onSubmit={async (values, { setSubmitting }) => {
                             try {
